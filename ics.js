@@ -41,8 +41,9 @@ var ics = function() {
          * @param  {string} location    Location of event
          * @param  {string} begin       Beginning date of event
          * @param  {string} stop        Ending date of event
+		 * @param  {boolean} isAllDay	Specifies if it's an all day event
          */
-        'addEvent': function(subject, description, location, begin, stop, rrule) {
+        'addEvent': function(subject, description, location, begin, stop, isAllDay, rrule) {
             // I'm not in the mood to make these optional... So they are all required
             if (typeof subject === 'undefined' ||
                 typeof description === 'undefined' ||
@@ -51,6 +52,10 @@ var ics = function() {
                 typeof stop === 'undefined'
             ) {
                 return false;
+            }
+            
+            if (typeof isAllDay === 'undefined') {
+              isAllDay = false;
             }
 
             // validate rrule
@@ -80,35 +85,19 @@ var ics = function() {
               }
             }
 
-            //TODO add time and time zone? use moment to format?
-            var start_date = new Date(begin);
-            var end_date = new Date(stop);
-
-            var start_year = ("0000" + (start_date.getUTCFullYear().toString())).slice(-4);
-            var start_month = ("00" + ((start_date.getUTCMonth() + 1).toString())).slice(-2);
-            var start_day = ("00" + ((start_date.getUTCDate()).toString())).slice(-2);
-            var start_hours = ("00" + (start_date.getUTCHours().toString())).slice(-2);
-            var start_minutes = ("00" + (start_date.getUTCMinutes().toString())).slice(-2);
-            var start_seconds = ("00" + (start_date.getUTCSeconds().toString())).slice(-2);
-
-            var end_year = ("0000" + (end_date.getUTCFullYear().toString())).slice(-4);
-            var end_month = ("00" + ((end_date.getUTCMonth() + 1).toString())).slice(-2);
-            var end_day = ("00" + ((end_date.getUTCDate()).toString())).slice(-2);
-            var end_hours = ("00" + (end_date.getUTCHours().toString())).slice(-2);
-            var end_minutes = ("00" + (end_date.getUTCMinutes().toString())).slice(-2);
-            var end_seconds = ("00" + (end_date.getUTCSeconds().toString())).slice(-2);
-
-
-            // Since some calendars don't add 0 second events, we need to remove time if there is none...
-            var start_time = '';
-            var end_time = '';
-            if (start_hours + start_minutes + start_seconds + end_hours + end_minutes + end_seconds != 0) {
-                start_time = 'T' + start_hours + start_minutes + start_seconds;
-                end_time = 'T' + end_hours + end_minutes + end_seconds;
+            var start_date = moment(begin);
+            var end_date = moment(stop);
+            var start = '';
+            var end = '';
+            
+            if (isAllDay) {
+                start = start_date.utc().format('YYYYMMDD');
+                end = end_date.utc().format('YYYYMMDD');
             }
-
-            var start = start_year + start_month + start_day + start_time + 'Z';
-            var end = end_year + end_month + end_day + end_time + 'Z';
+			else {
+                start = start_date.utc().format('YYYYMMDDhhmmss') + 'Z';
+                end = end_date.utc().format('YYYYMMDDhhmmss') + 'Z';
+            }
 
             // recurrence rule vars
             var rruleString;

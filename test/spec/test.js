@@ -11,7 +11,7 @@
         });
         describe('Calendar String', function () {
             it('should be a string with no events', function () {
-                assert.strictEqual(cal.calendar(), 'BEGIN:VCALENDAR\nVERSION:2.0\n\nEND:VCALENDAR', 'calendar does not match');
+                assert.strictEqual(cal.calendar(), 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\n\r\nEND:VCALENDAR', 'calendar does not match');
             });
         });
     });

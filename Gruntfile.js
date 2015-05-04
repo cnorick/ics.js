@@ -8,7 +8,7 @@ module.exports = function(grunt) {
       },
       dist: {
         src: ['bower_components/Blob.js/Blob.js', 'bower_components/FileSaver/FileSaver.js', 'ics.js'],
-        dest: 'ics.deps.min.js'
+        dest: 'dist/ics.deps.min.js'
       }
     },
     uglify: {
@@ -17,8 +17,8 @@ module.exports = function(grunt) {
       },
       dist: {
         files: {
-          'ics.min.js': ['ics.js'],
-          'ics.deps.min.js': ['ics.deps.min.js'] 
+          'dist/ics.min.js': ['ics.js'],
+          'dist/ics.deps.min.js': ['dist/ics.deps.min.js'] 
         }
       }
     },
