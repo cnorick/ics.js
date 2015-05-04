@@ -126,6 +126,8 @@ var ics = function() {
                 }
               }
             }
+            
+            description = description.replace("\n", "\\n").replace(";", "\;").replace(",", "\,");
 
             var calendarEvent = [
                 'BEGIN:VEVENT',
