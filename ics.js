@@ -100,8 +100,8 @@ var ics = function() {
                 end = end_date.utc().format('YYYYMMDD');
             }
 			else {
-                start = start_date.utc().format('YYYYMMDDhhmmss') + 'Z';
-                end = end_date.utc().format('YYYYMMDDhhmmss') + 'Z';
+                start = start_date.utc().format('YYYYMMDD') + "T" + start_date.utc().format('HHmmss') + "Z";
+                end = end_date.utc().format('YYYYMMDD') + "T" + end_date.utc().format('HHmmss') + "Z";
             }
 
             // recurrence rule vars
