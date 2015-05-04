@@ -90,6 +90,11 @@ var ics = function() {
             var start = '';
             var end = '';
             
+            //Hackish, this should be ideally handled in ics.js
+            if (isAllDay) {
+              end_date.add(1, 'days');
+            }
+            
             if (isAllDay) {
                 start = start_date.utc().format('YYYYMMDD');
                 end = end_date.utc().format('YYYYMMDD');
