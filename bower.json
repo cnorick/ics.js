@@ -4,12 +4,12 @@
     "dist/ics.deps.min.js",
     "dist/ics.min.js"
   ],
-  "version": "0.1.5",
+  "version": "0.1.6",
   "homepage": "https://github.com/Wysie/ics.js",
   "contributors": [
     "Travis Krause <travis@codeforemen.com>",
     "Kyle Hornberg <kyle.hornberg@gmail.com>",
-    "Soh Yuan Chin <sohyuanchin@gmail.com>",
+    "Soh Yuan Chin <sohyuanchin@gmail.com>"
   ],
   "description": "A browser friendly .ics/.vcs file generator written entirely in javascript",
   "keywords": [
