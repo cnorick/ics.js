@@ -127,7 +127,7 @@ var ics = function() {
               }
             }
             
-            description = description.escapeSpecialChars();
+            description = description.escapeSpecialChars() + "\\n";
 
             var calendarEvent = [
                 'BEGIN:VEVENT',

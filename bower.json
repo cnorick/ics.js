@@ -4,7 +4,7 @@
     "dist/ics.deps.min.js",
     "dist/ics.min.js"
   ],
-  "version": "0.1.6",
+  "version": "0.2.1",
   "homepage": "https://github.com/Wysie/ics.js",
   "contributors": [
     "Travis Krause <travis@codeforemen.com>",
