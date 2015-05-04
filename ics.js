@@ -172,14 +172,9 @@ var ics = function() {
 };
 
 String.prototype.escapeSpecialChars = function() {
-    return this.replace(/\\n/g, "\\n")
-               .replace(/\\'/g, "\\'")
-               .replace(/\\"/g, '\\"')
-               .replace(/\\&/g, "\\&")
-               .replace(/\\r/g, "\\r")
-               .replace(/\\t/g, "\\t")
-               .replace(/\\b/g, "\\b")
-               .replace(/\\f/g, "\\f")
-               .replace(/\\;/g, "\\;")
-               .replace(/\\,/g, "\\,");
+    return this.replace(/\r\n/g, "\\n")
+               .replace(/\n/g, "\\n")
+               .replace(/\r/g, "\\r")
+               .replace(/;/g, "\\;")
+               .replace(/,/g, "\\,");
 };
