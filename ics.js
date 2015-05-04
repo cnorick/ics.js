@@ -127,7 +127,7 @@ var ics = function() {
               }
             }
             
-            description = description.replace("\n", "\\n").replace(";", "\;").replace(",", "\,");
+            description = description.escapeSpecialChars();
 
             var calendarEvent = [
                 'BEGIN:VEVENT',
@@ -169,4 +169,17 @@ var ics = function() {
             return calendar;
         }
     };
+};
+
+String.prototype.escapeSpecialChars = function() {
+    return this.replace(/\\n/g, "\\n")
+               .replace(/\\'/g, "\\'")
+               .replace(/\\"/g, '\\"')
+               .replace(/\\&/g, "\\&")
+               .replace(/\\r/g, "\\r")
+               .replace(/\\t/g, "\\t")
+               .replace(/\\b/g, "\\b")
+               .replace(/\\f/g, "\\f")
+               .replace(/\\;/g, "\\;")
+               .replace(/\\,/g, "\\,");
 };
