@@ -96,12 +96,12 @@ var ics = function() {
             }
             
             if (isAllDay) {
-                start = start_date.utc().format('YYYYMMDD');
-                end = end_date.utc().format('YYYYMMDD');
+                start = start_date.format('YYYYMMDD');
+                end = end_date.format('YYYYMMDD');
             }
 			else {
-                start = start_date.utc().format('YYYYMMDD') + "T" + start_date.utc().format('HHmmss') + "Z";
-                end = end_date.utc().format('YYYYMMDD') + "T" + end_date.utc().format('HHmmss') + "Z";
+                start = start_date.utc().format('YYYYMMDD[T]HHmmss[Z]');
+                end = end_date.utc().format('YYYYMMDD[T]HHmmss[Z]');
             }
 
             // recurrence rule vars
@@ -166,7 +166,7 @@ var ics = function() {
 
             var blob = new Blob([calendar], {type: 'text/x-vCalendar;charset=' + document.characterSet});
             saveAs(blob, filename + ext);
-            return calendar;
+            return;
         }
     };
 };
