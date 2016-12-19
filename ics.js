@@ -17,6 +17,8 @@ var ics = function() {
     ].join(SEPARATOR);
     var calendarEnd = SEPARATOR + 'END:VCALENDAR';
 
+    var validDays = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+	
     return {
         /**
          * Returns events array
@@ -124,6 +126,18 @@ var ics = function() {
                 if (rrule.count) {
                   rruleString += ';COUNT=' + rrule.count;
                 }
+				if(rrule.byDay && rrule.byDay.length > 0){
+				  rruleString += ';BYDAY=';
+				  for(var i = 0; i < rrule.byDay.length; i++){
+				    if(!validDays.includes(rrule.byDay[i]){
+					  throw "BYDAY value is not valid.";
+					}
+				    rruleString += rrule.byDay[0] + ',';
+				  }	
+				
+					// Remove the extra comma.
+					rruleString = rruleString.substring(0, str.length - 1);
+				}
               }
             }
             
