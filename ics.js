@@ -18,7 +18,7 @@ var ics = function() {
     var calendarEnd = SEPARATOR + 'END:VCALENDAR';
 
     var validDays = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
-	
+
     return {
         /**
          * Returns events array
@@ -43,105 +43,107 @@ var ics = function() {
          * @param  {string} location    Location of event
          * @param  {string} begin       Beginning date of event
          * @param  {string} stop        Ending date of event
-		 * @param  {boolean} isAllDay	Specifies if it's an all day event
+         * @param  {boolean} isAllDay	Specifies if it's an all day event
          */
         'addEvent': function(subject, description, location, begin, stop, isAllDay, rrule) {
             // I'm not in the mood to make these optional... So they are all required
             if (typeof subject === 'undefined' ||
-                typeof description === 'undefined' ||
-                typeof location === 'undefined' ||
-                typeof begin === 'undefined' ||
-                typeof stop === 'undefined'
-            ) {
+                    typeof description === 'undefined' ||
+                    typeof location === 'undefined' ||
+                    typeof begin === 'undefined' ||
+                    typeof stop === 'undefined'
+               ) {
                 return false;
             }
-            
+
             if (typeof isAllDay === 'undefined') {
-              isAllDay = false;
+                isAllDay = false;
             }
 
             // validate rrule
             if (rrule) {
-              if (!rrule.rule) {
-                if (rrule.freq !== 'YEARLY' && rrule.freq !== 'MONTHLY' && rrule.freq !== 'WEEKLY' && rrule.freq !== 'DAILY') {
-                  throw "Recurrence rule frequency must be provided and be one of the following: 'YEARLY', 'MONTHLY', 'WEEKLY', or 'DAILY'";
-                }
+                if (!rrule.rule) {
+                    if (rrule.freq !== 'YEARLY' && rrule.freq !== 'MONTHLY' && rrule.freq !== 'WEEKLY' && rrule.freq !== 'DAILY') {
+                        throw "Recurrence rule frequency must be provided and be one of the following: 'YEARLY', 'MONTHLY', 'WEEKLY', or 'DAILY'";
+                    }
 
-                if (rrule.until) {
-                  if (isNaN(Date.parse(rrule.until))) {
-                    throw "Recurrence rule 'until' must be a valid date string";
-                  }
-                }
+                    if (rrule.until) {
+                        if (isNaN(Date.parse(rrule.until))) {
+                            throw "Recurrence rule 'until' must be a valid date string";
+                        }
+                    }
 
-                if (rrule.interval) {
-                  if (isNaN(parseInt(rrule.interval))) {
-                    throw "Recurrence rule 'interval' must be an integer";
-                  }
-                }
+                    if (rrule.interval) {
+                        if (isNaN(parseInt(rrule.interval))) {
+                            throw "Recurrence rule 'interval' must be an integer";
+                        }
+                    }
 
-                if (rrule.count) {
-                  if (isNaN(parseInt(rrule.count))) {
-                    throw "Recurrence rule 'count' must be an integer";
-                  }
+                    if (rrule.count) {
+                        if (isNaN(parseInt(rrule.count))) {
+                            throw "Recurrence rule 'count' must be an integer";
+                        }
+                    }
                 }
-              }
             }
 
             var start_date = moment(begin);
             var end_date = moment(stop);
             var start = '';
             var end = '';
-            
+
             //Hackish, this should be ideally handled in ics.js
             if (isAllDay) {
-              end_date.add(1, 'days');
+                end_date.add(1, 'days');
             }
-            
+
             if (isAllDay) {
                 start = start_date.utc().format('YYYYMMDD');
                 end = end_date.utc().format('YYYYMMDD');
             }
-			else {
-                start = start_date.utc().format('YYYYMMDDhhmmss') + 'Z';
-                end = end_date.utc().format('YYYYMMDDhhmmss') + 'Z';
+            else {
+                start = start_date.utc().format('YYYYMMDDThhmmss') + 'Z';
+                end = end_date.utc().format('YYYYMMDDThhmmss') + 'Z';
             }
 
             // recurrence rule vars
             var rruleString;
             if (rrule) {
-              if (rrule.rule) {
-                rruleString = rrule.rule;
-              } else {
-                rruleString = 'RRULE:FREQ=' + rrule.freq;
+                if (rrule.rule) {
+                    rruleString = rrule.rule;
+                } else {
+                    rruleString = 'RRULE:FREQ=' + rrule.freq;
 
-                if (rrule.until) {
-                  var uDate = new Date(Date.parse(rrule.until)).toISOString();
-                  rruleString += ';UNTIL=' + uDate.substring(0, uDate.length - 13).replace(/[-]/g, '') + '000000Z';
-                }
+                    if (rrule.until) {
+                        var uDate = new Date(Date.parse(rrule.until)).toISOString();
+                        rruleString += ';UNTIL=' + uDate.substring(0, uDate.length - 13).replace(/[-]/g, '') + '000000Z';
+                    }
 
-                if (rrule.interval) {
-                  rruleString += ';INTERVAL=' + rrule.interval;
-                }
+                    if (rrule.interval) {
+                        rruleString += ';INTERVAL=' + rrule.interval;
+                    }
 
-                if (rrule.count) {
-                  rruleString += ';COUNT=' + rrule.count;
+                    if (rrule.count) {
+                        rruleString += ';COUNT=' + rrule.count;
+                    }
+                    if(rrule.byDay != null && rrule.byDay.length > 0){
+                        rruleString += ';BYDAY=';
+                        for(var i = 0; i < rrule.byDay.length; i++){
+                            if(!validDays.includes(rrule.byDay[i])){
+                                throw "BYDAY value '" + rrule.byDay[i] + "' is not valid.";
+                            }
+                            rruleString += rrule.byDay[i] + ',';
+                        }	
+
+                        // Remove the extra comma.
+                        rruleString = rruleString.substring(0, rruleString.length - 1);
+                    }
                 }
-				if(rrule.byDay && rrule.byDay.length > 0){
-				  rruleString += ';BYDAY=';
-				  for(var i = 0; i < rrule.byDay.length; i++){
-				    if(!validDays.includes(rrule.byDay[i]){
-					  throw "BYDAY value is not valid.";
-					}
-				    rruleString += rrule.byDay[0] + ',';
-				  }	
-				
-					// Remove the extra comma.
-					rruleString = rruleString.substring(0, str.length - 1);
-				}
-              }
             }
-            
+
             description = description.escapeSpecialChars();
+            subject = subject.escapeSpecialChars();
+            location = location.escapeSpecialChars();
 
             var calendarEvent = [
                 'BEGIN:VEVENT',
@@ -155,7 +157,7 @@ var ics = function() {
             ];
 
             if (rruleString) {
-              calendarEvent.splice(4, 0, rruleString);
+                calendarEvent.splice(4, 0, rruleString);
             }
 
             calendarEvent = calendarEvent.join(SEPARATOR);
@@ -187,13 +189,13 @@ var ics = function() {
 
 String.prototype.escapeSpecialChars = function() {
     return this.replace(/\\n/g, "\\n")
-               .replace(/\\'/g, "\\'")
-               .replace(/\\"/g, '\\"')
-               .replace(/\\&/g, "\\&")
-               .replace(/\\r/g, "\\r")
-               .replace(/\\t/g, "\\t")
-               .replace(/\\b/g, "\\b")
-               .replace(/\\f/g, "\\f")
-               .replace(/\\;/g, "\\;")
-               .replace(/\\,/g, "\\,");
+        .replace(/\\'/g, "\\'")
+        .replace(/\\"/g, '\\"')
+        .replace(/\\&/g, "\\&")
+        .replace(/\\r/g, "\\r")
+        .replace(/\\t/g, "\\t")
+        .replace(/\\b/g, "\\b")
+        .replace(/\\f/g, "\\f")
+        .replace(/\\;/g, "\\;")
+        .replace(/\\,/g, "\\,");
 };
